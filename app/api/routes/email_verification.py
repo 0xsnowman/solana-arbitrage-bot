@@ -4,7 +4,7 @@ from app.schemas.email import EmailRequest, CodeVerification
 
 router = APIRouter()
 
-@router.post("/send-code")
+@router.post("/send-verification-code")
 async def send_verification_code(request: EmailRequest):
     await send_email(request.email)
     return {"message": "Verification code sent!"}
