@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+sqlalchemy
+psycopg2-binary
+alembic
+bcrypt
+passlib
+python-jose
+pydantic
+python-dotenv
+python-multipart  # If handling file uploads or form data

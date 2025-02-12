@@ -1,0 +1,34 @@
+# Python-related ignores
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+venv/
+.env
+.env.local
+.env.*.local
+
+# FastAPI & database-related
+instance/
+migrations/
+alembic/
+
+# Logs and Debug
+logs/
+*.log
+*.out
+*.err
+debug.log
+
+# Editor & OS-specific
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml
+*.pid
+
+# JWT & Security
+jwt_secret.key
