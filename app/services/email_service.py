@@ -12,6 +12,7 @@ async def send_email(recipient: str):
     sender_email = settings.EMAIL_USER
     password = settings.EMAIL_PASSWORD
 
+    print(sender_email)
     msg = MIMEText(f"Your verification code is: {code}")
     msg["Subject"] = "Your Verification Code"
     msg["From"] = sender_email
