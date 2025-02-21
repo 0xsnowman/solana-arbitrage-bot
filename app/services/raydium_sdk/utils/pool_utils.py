@@ -123,45 +123,45 @@ def fetch_amm_v4_pool_keys(pair_address: str) -> Optional[AmmV4PoolKeys]:
             raise ValueError("Value must be in the range of a u64 (0 to 2^64 - 1).")
         return struct.pack('<Q', value)
    
-    try:
-        amm_id = Pubkey.from_string(pair_address)
-        amm_data = client.get_account_info_json_parsed(amm_id, commitment=Processed).value.data
-        amm_data_decoded = LIQUIDITY_STATE_LAYOUT_V4.parse(amm_data)
-        marketId = Pubkey.from_bytes(amm_data_decoded.serumMarket)
-        marketInfo = client.get_account_info_json_parsed(marketId, commitment=Processed).value.data
-        market_decoded = MARKET_STATE_LAYOUT_V3.parse(marketInfo)
-        vault_signer_nonce = market_decoded.vault_signer_nonce
-        
-        ray_authority_v4=Pubkey.from_string("5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1")
-        open_book_program=Pubkey.from_string("srmqPvymJeFKQ4zGQed1GFppgkRHL9kaELCbyksJtPX")
-        token_program_id=Pubkey.from_string("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")
+    # try:
+    amm_id = Pubkey.from_string(pair_address)
+    amm_data = client.get_account_info_json_parsed(amm_id, commitment=Processed).value.data
+    amm_data_decoded = LIQUIDITY_STATE_LAYOUT_V4.parse(amm_data)
+    marketId = Pubkey.from_bytes(amm_data_decoded.serumMarket)
+    marketInfo = client.get_account_info_json_parsed(marketId, commitment=Processed).value.data
+    market_decoded = MARKET_STATE_LAYOUT_V3.parse(marketInfo)
+    vault_signer_nonce = market_decoded.vault_signer_nonce
+    
+    ray_authority_v4=Pubkey.from_string("5Q544fKrFoe6tsEbD7S8EmxGTJYAKtTVhAW5Q5pge4j1")
+    open_book_program=Pubkey.from_string("srmqPvymJeFKQ4zGQed1GFppgkRHL9kaELCbyksJtPX")
+    token_program_id=Pubkey.from_string("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")
 
-        pool_keys = AmmV4PoolKeys(
-            amm_id=amm_id,
-            base_mint=Pubkey.from_bytes(market_decoded.base_mint),
-            quote_mint=Pubkey.from_bytes(market_decoded.quote_mint),
-            base_decimals=amm_data_decoded.coinDecimals,
-            quote_decimals=amm_data_decoded.pcDecimals,
-            open_orders=Pubkey.from_bytes(amm_data_decoded.ammOpenOrders),
-            target_orders=Pubkey.from_bytes(amm_data_decoded.ammTargetOrders),
-            base_vault=Pubkey.from_bytes(amm_data_decoded.poolCoinTokenAccount),
-            quote_vault=Pubkey.from_bytes(amm_data_decoded.poolPcTokenAccount),
-            market_id=marketId,
-            market_authority=Pubkey.create_program_address(seeds=[bytes(marketId), bytes_of(vault_signer_nonce)], program_id=open_book_program),
-            market_base_vault=Pubkey.from_bytes(market_decoded.base_vault),
-            market_quote_vault=Pubkey.from_bytes(market_decoded.quote_vault),
-            bids=Pubkey.from_bytes(market_decoded.bids),
-            asks=Pubkey.from_bytes(market_decoded.asks),
-            event_queue=Pubkey.from_bytes(market_decoded.event_queue),
-            ray_authority_v4=ray_authority_v4,
-            open_book_program=open_book_program,
-            token_program_id=token_program_id
-        )
+    pool_keys = AmmV4PoolKeys(
+        amm_id=amm_id,
+        base_mint=Pubkey.from_bytes(market_decoded.base_mint),
+        quote_mint=Pubkey.from_bytes(market_decoded.quote_mint),
+        base_decimals=amm_data_decoded.coinDecimals,
+        quote_decimals=amm_data_decoded.pcDecimals,
+        open_orders=Pubkey.from_bytes(amm_data_decoded.ammOpenOrders),
+        target_orders=Pubkey.from_bytes(amm_data_decoded.ammTargetOrders),
+        base_vault=Pubkey.from_bytes(amm_data_decoded.poolCoinTokenAccount),
+        quote_vault=Pubkey.from_bytes(amm_data_decoded.poolPcTokenAccount),
+        market_id=marketId,
+        market_authority=Pubkey.create_program_address(seeds=[bytes(marketId), bytes_of(vault_signer_nonce)], program_id=open_book_program),
+        market_base_vault=Pubkey.from_bytes(market_decoded.base_vault),
+        market_quote_vault=Pubkey.from_bytes(market_decoded.quote_vault),
+        bids=Pubkey.from_bytes(market_decoded.bids),
+        asks=Pubkey.from_bytes(market_decoded.asks),
+        event_queue=Pubkey.from_bytes(market_decoded.event_queue),
+        ray_authority_v4=ray_authority_v4,
+        open_book_program=open_book_program,
+        token_program_id=token_program_id
+    )
 
-        return pool_keys
-    except Exception as e:
-        print(f"Error fetching AMMv4 pool keys: {e}")
-        return None
+    return pool_keys
+    # except Exception as e:
+    #     print(f"Error fetching AMMv4 pool keys: {e}")
+    #     return None
 
 def fetch_cpmm_pool_keys(pair_address: str) -> Optional[CpmmPoolKeys]:
     try:

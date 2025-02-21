@@ -1,7 +1,7 @@
 from solana.rpc.api import Client
 from solders.keypair import Keypair #type: ignore
 
-PRIV_KEY = "base58_priv_str_here"
+PRIV_KEY = ""
 RPC = "rpc_url_here"
 UNIT_BUDGET =  150_000
 UNIT_PRICE =  1_000_000
