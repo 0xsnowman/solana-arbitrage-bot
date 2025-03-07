@@ -4,6 +4,8 @@ from typing import Optional, Union
 import requests
 from solders.signature import Signature #type: ignore
 from config import RPC, client, payer_keypair
+from solana.rpc.commitment import Commitment
+from solana.system_program import transfer, TransferParams
 
 def find_data(data: Union[dict, list], field: str) -> Optional[str]:
     if isinstance(data, dict):
@@ -66,3 +68,29 @@ def confirm_txn(txn_sig: Signature, max_retries: int = 20, retry_interval: int =
     
     print("Max retries reached. Transaction confirmation failed.")
     return None
+
+# Example Jupiter swap payload (mocked)
+async def create_swap_transaction():
+    # Usually, you'd fetch the swap instruction from Jupiter API
+    transaction = Transaction()
+    
+    # Example: a simple SOL transfer (replace with Jupiter swap instructions)
+    transaction.add(
+        transfer(
+            TransferParams(
+                from_pubkey=wallet.public_key,
+                to_pubkey=wallet.public_key,  # Replace with recipient address
+                lamports=1000000,  # 0.001 SOL
+            )
+        )
+    )
+    
+    # Sign and send the transaction
+    response = await client.send_transaction(transaction, wallet, opts={"skip_preflight": True})
+    print("Transaction signature:", response["result"])
+    return response["result"]
+
+async def confirm_swap_txn():
+    signature = await create_swap_transaction()
+    confirmation = await client.confirm_transaction(signature, Commitment("confirmed"))
+    print("Transaction confirmed:", confirmation)
